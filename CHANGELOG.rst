@@ -3,6 +3,7 @@ UNRELEASED
 
 * Drop support for EOL Python versions: 3.7, 3.8, 3.9.
 * Print proper child process exit status.
+* Removed dependency to `py <https://pypi.org/project/py>`__.
 
 v1.6.0
 ======
