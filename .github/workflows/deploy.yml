@@ -11,18 +11,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    # Required by attest-build-provenance-github.
-    permissions:
-      id-token: write
-      attestations: write
-
     steps:
     - uses: actions/checkout@v7
 
     - name: Build and Check Package
       uses: hynek/build-and-inspect-python-package@v3.0.1
-      with:
-        attest-build-provenance-github: 'true'
 
   deploy:
 
@@ -42,4 +35,3 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.pypi_token }}
-        attestations: true
