@@ -1,11 +1,12 @@
+import marshal
+import multiprocessing
 import os
 import sys
-import warnings
 import tempfile
-import marshal
+import warnings
+
 import pytest
 from _pytest import runner
-import multiprocessing
 
 # we know this bit is bad, but we cant help it with the current pytest setup
 
@@ -56,6 +57,7 @@ def pytest_runtest_protocol(item):
 
 class _ForkedResult:
     """Mimics py.process.ForkedFunc result object."""
+
     def __init__(self):
         self.retval = None
         self.exitstatus = 0
@@ -127,8 +129,8 @@ def forked_run_report(item):
         # Pre-create files so reads don't fail if child never writes
         open(stdout_path, "w").close()
         open(stderr_path, "w").close()
-
-        proc = multiprocessing.Process(
+        ctx = multiprocessing.get_context("fork")
+        proc = ctx.Process(
             target=_worker,
             args=(runforked, stdout_path, stderr_path, retval_path),
         )
@@ -145,13 +147,13 @@ def forked_run_report(item):
 
         # Read captured output — available even after a crash
         try:
-            with open(stdout_path, "r") as f:
+            with open(stdout_path) as f:
                 result.out = f.read()
         except OSError:
             result.out = ""
 
         try:
-            with open(stderr_path, "r") as f:
+            with open(stderr_path) as f:
                 result.err = f.read()
         except OSError:
             result.err = ""
@@ -183,6 +185,7 @@ def report_process_crash(item, result):
     # location (nodeid path + fspath) which is always populated by pytest.
     try:
         from _pytest._code import getfslineno
+
         path, lineno = getfslineno(item)
         if lineno == -1:
             raise ValueError("unresolvable")
@@ -201,7 +204,7 @@ def report_process_crash(item, result):
             result.signal,
             sig_name,
         )
-        
+
         info_bare = "%s:%s: running the test CRASHED with signal %d" % (
             path,
             lineno,
@@ -235,7 +238,7 @@ def report_process_crash(item, result):
         return rep
 
     rep.outcome = "skipped"
-    
+
     xfail_reason = xfail_marker.kwargs.get(
         "reason",
         xfail_marker.args[0] if xfail_marker.args else "",
