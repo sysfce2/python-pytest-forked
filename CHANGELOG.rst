@@ -1,4 +1,4 @@
-v1.7.0
+v1.7.1
 ======
 
 * Drop support for EOL Python versions: 3.7, 3.8, 3.9.
