@@ -33,6 +33,8 @@ jobs:
     permissions:
       id-token: write
 
+    environment: deploy
+
     steps:
     - name: Download Package
       uses: actions/download-artifact@v8
