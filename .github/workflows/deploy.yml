@@ -30,6 +30,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write
+
     steps:
     - name: Download Package
       uses: actions/download-artifact@v8
